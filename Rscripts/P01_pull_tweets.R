@@ -25,4 +25,12 @@ tweets <- d %>%
   mutate(time_of_day = get_time(local_time)) %>%
   mutate(commute = cut(x=hour(local_time), breaks = breaks, labels = labels, include.lowest=TRUE, right=F)) %>% 
   select(text, local_time, commute, date, time_of_day)
-write_csv(tweets, "Data/caltrain_tweets.csv")
+# write_csv(tweets, "Data/caltrain_tweets.csv") # original pull
+
+# future pulls should add on
+old <- read_csv("Data/caltrain_tweets.csv") 
+
+new <- old %>% 
+  bind_rows() %>% 
+  distinct()
+write_csv(new, "Data/caltrain_tweets.csv") 
