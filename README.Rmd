@@ -134,7 +134,7 @@ p4
 
 Data were pulled from the Caltrain twitter account using the [rtweet](https://rtweet.info/index.html) package. This package uses the Twitter API to gather up to 3200 tweets on a user's timeline. Data were collected starting on `r min(aggdata$date)`. Replies were removed, and all tweets not during commute hours (7-9AM and 3-7PM) were dropped. All weekend tweets were dropped as well.
 
-Tweets were aggregated by date and commute (morning/evening), such that each date had two commutes even if the account did not tweet during those times on a given day. A delay tweet was defined by mentioning the word "delay", "delayed", or a mention of -XX, where XX is a pair of integers. The latter definition is to capture the accounts shorthand for delay times (e.g. NB278 -15" departing MVW indicates that north bound train 257 is 15 minutes late departing the Mountain View station). A major delay is indicated by a delay of 20 minutes or more. Data were collapsed to record whether any tweets during commute times indicated a delay, and if so, whether there was a major delay.
+Tweets were aggregated by date and commute (morning/evening), such that each date had two commutes even if the account did not tweet during those times on a given day. A delay tweet was defined by mentioning the word "delay", "delayed", or a mention of -XX, where XX is a pair of integers. The latter definition is to capture the account's shorthand for delay times (e.g. NB278 -15" departing MVW indicates that north bound train 257 is 15 minutes late departing the Mountain View station). A major delay is indicated by a delay of 20 minutes or more. Data were collapsed to record whether any tweets during commute times indicated a delay, and if so, whether there was a major delay.
 
 
 
