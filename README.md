@@ -4,7 +4,14 @@ Caltrain Delays
 Overview
 --------
 
-[Caltrain](http://caltrain.com) is a commuter rail line that serves the San Francisco Peninsula. It serves about 65,000 riders per week day over it's 77-mile route, and has an operating budget just shy of $150 million.
+The goal of this project was to determine how often Caltrain is delayed for commuters.
+
+**Short answer: Caltrain has significant delays on 1-2 commutes per week.**
+
+Background
+----------
+
+[Caltrain](http://caltrain.com) is a commuter rail line that serves the San Francisco Peninsula. It serves about 65,000 riders per week day over it's 77-mile route, and has an operating budget of about $150 million.
 
 Caltrain [defines on-time arrivals](http://www.caltrain.com/Assets/__Agendas+and+Minutes/JPB/2018/2018-12-06+Rail+Safety+Presentation.pdf) by comparing scheduled arrival times to actual arrival times at end-line locations (San Francisco 4th and King, San Jose Diridon, Tamien, or Gilroy stations). It has a stated goal of 95 percent on-time at end-line locations, defined at reaching the final destination no more than 6 minutes from the scheduled arrival time. By this metric, Caltrain's on-time performance (OTP) is about 93 percent.
 
@@ -15,7 +22,7 @@ Caltrain operates a [twitter account](https://twitter.com/Caltrain) that provide
 Results
 -------
 
-<img src="README_files/figure-markdown_github/show figures-1.png" width="\textwidth" style="display: block; margin: auto;" /><img src="README_files/figure-markdown_github/show figures-2.png" width="\textwidth" style="display: block; margin: auto;" /><img src="README_files/figure-markdown_github/show figures-3.png" width="\textwidth" style="display: block; margin: auto;" /><img src="README_files/figure-markdown_github/show figures-4.png" width="\textwidth" style="display: block; margin: auto;" />
+<img src="R01_markdown_attempt1_files/figure-markdown_github/show figures-1.png" width="\textwidth" style="display: block; margin: auto;" /><img src="R01_markdown_attempt1_files/figure-markdown_github/show figures-2.png" width="\textwidth" style="display: block; margin: auto;" /><img src="R01_markdown_attempt1_files/figure-markdown_github/show figures-3.png" width="\textwidth" style="display: block; margin: auto;" /><img src="R01_markdown_attempt1_files/figure-markdown_github/show figures-4.png" width="\textwidth" style="display: block; margin: auto;" />
 
 <em>Notes:</em> Data on delays from Caltrain twitter account. A delay is defined by the announcement of delays in a tweet for any train and any station, and a major delay is defined as at least 20 minutes behind schedule. Morning commute is defined as 7-9AM, and evening commute as 3-7PM.
 
