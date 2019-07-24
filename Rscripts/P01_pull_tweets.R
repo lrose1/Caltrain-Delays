@@ -3,6 +3,8 @@
 library(tidyverse)
 library(lubridate)
 library(rtweet)
+library(data.table)
+
 
 d <- get_timeline('@Caltrain', n= 3200, include_rts = FALSE) 
 
@@ -19,18 +21,19 @@ labels <- c("Other", "Morning", "Other", "Evening", "Other")
 
 tweets <- d %>% 
   filter(is.na(reply_to_status_id))  %>% 
-  select(text, created_at) %>%
+  dplyr::select(text, created_at) %>%
   mutate(local_time = with_tz(created_at, tzone= "America/Los_Angeles")) %>% 
   mutate(date = as.Date(local_time)) %>% 
-  mutate(time_of_day = get_time(local_time)) %>%
+  mutate(time_of_day = strftime(local_time, format="%H:%M:%S")) %>%
   mutate(commute = cut(x=hour(local_time), breaks = breaks, labels = labels, include.lowest=TRUE, right=F)) %>% 
-  select(text, local_time, commute, date, time_of_day)
+  dplyr::select(text, local_time, commute, date, time_of_day)
 # write_csv(tweets, "Data/caltrain_tweets.csv") # original pull
 
 # future pulls should add on
-old <- read_csv("Data/caltrain_tweets.csv") 
+old <- read_csv("Data/caltrain_tweets.csv") %>% 
+  mutate(time_of_day = strftime(local_time, format="%H:%M:%S"))
 
 new <- old %>% 
-  bind_rows() %>% 
+  bind_rows(tweets) %>% 
   distinct()
-write_csv(new, "Data/caltrain_tweets.csv") 
+write_csv(new, "Data/caltrain_tweets_new.csv") 

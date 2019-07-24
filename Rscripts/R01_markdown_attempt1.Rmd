@@ -19,7 +19,9 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo=F)
 library(tidyverse)
 library(lubridate)
 library(gridExtra)
-tweets <- read_csv("Data/caltrain_tweets.csv") 
+tweets <- read_csv("Data/caltrain_tweets_new.csv") 
+is.even <- function(x) x %% 2 == 0
+is.odd <- function(x) x %% 2 != 0
 
 working <- tweets %>% 
   select(-time_of_day) %>% 
@@ -29,10 +31,20 @@ working <- tweets %>%
   filter(weekday != "Sat") %>% 
   filter(weekday != "Sun") %>% 
   mutate(month = month(date)) %>% 
-  mutate(delay = ifelse(grepl("delay", text) | grepl("-[0-9]" , text),1,0)) %>%   # to account for the -XX" thing they do
-  mutate(major_delay = ifelse(delay == 1 & grepl("-[([2-9]|[0-9])]", text),1,0))  # >20 minutes
-
+  mutate(delay = ifelse(grepl("delay", text, ignore.case=T) | grepl("-[0-9]" , text),1,0)) %>%   # to account for the -XX" thing they do
+  mutate(major_delay = ifelse(delay == 1 & grepl("-[([2-9]|[0-9])]", text),1,0)) %>%  # >20 minutes
+  mutate(train = as.numeric(str_extract(text, "[0-9]{3}"))) %>% 
+  mutate(direction = ifelse(is.even(train), "SB",
+                            ifelse(is.odd(train), "NB", NA))) %>% 
+  mutate(nb = ifelse(direction == "NB", 1,0)) %>% 
+  mutate(sb = ifelse(direction == "SB", 1,0)) 
+  
 aggdata <- working %>% 
+  group_by(date, commute) %>%
+  summarise(delay = max(delay), major_delay = max(major_delay), nb = max(nb), sb=max(sb)) %>% 
+  mutate(weekday = wday(date, label=T))  
+
+aggdata2 <- working %>% 
   group_by(date, commute) %>% 
   summarise(delay = max(delay), major_delay = max(major_delay)) %>% 
   mutate(weekday = wday(date, label=T)) 
@@ -103,12 +115,39 @@ p4 <- aggdata %>%
                       labels=c("Delay", "Major Delay"))+
   ggtitle("Proportion of Commutes with Delays
           Over Time")
-```
 
+# most mentioned trains
+temp <- working %>% 
+  group_by(date, commute) %>% 
+  summarise(delay = max(delay), major_delay = max(major_delay), train = toString(unique(train))) %>%
+  separate(train, sep=",", into = c("t1", "t2", "t3", "t4", "t5", "t6", "t7", "t8", "t9"), convert = T) %>% 
+  mutate_at(vars(starts_with("t")), funs(as.numeric)) 
+p5 <- temp %>% 
+  gather("key", "value", t1, t2, t3, t4, t5, t6, t7, t8, t9) %>% 
+  group_by(value) %>%
+  summarise(n=n()) %>% 
+  filter(!is.na(value)) %>% 
+  filter(n >4)%>% 
+  ggplot(., aes(x = reorder(as.factor(value),-n, sum), y=n)) + geom_col( width = .6, position = "dodge2") +
+  theme(axis.text.x=element_text(angle=45, hjust=1))+
+  ylab("Num. Commute Delays") +
+  xlab("Train Number") +
+  ggtitle("Trains with the Most Delays")
+
+# direction
+
+
+```
 
 ## Overview
 
-[Caltrain](http://caltrain.com) is a commuter rail line that serves the San Francisco Peninsula. It serves about 65,000 riders per week day over it's 77-mile route, and has an operating budget just shy of $150 million. 
+The goal of this project was to determine how often Caltrain is delayed for commuters.
+
+**Short answer: Caltrain has significant delays on 1-2 commutes per week.**  
+
+## Background
+
+[Caltrain](http://caltrain.com) is a commuter rail line that serves the San Francisco Peninsula. It serves about 65,000 riders per week day over it's 77-mile route, and has an operating budget of about $150 million. 
 
 Caltrain [defines on-time arrivals](http://www.caltrain.com/Assets/__Agendas+and+Minutes/JPB/2018/2018-12-06+Rail+Safety+Presentation.pdf) by comparing scheduled arrival times to actual arrival times at end-line locations (San Francisco 4th and King, San Jose Diridon, Tamien, or Gilroy stations). It has a stated goal of 95 percent on-time at end-line locations, defined at reaching the final destination no more than 6 minutes from the scheduled arrival time. By this metric, Caltrain's on-time performance (OTP) is about 93 percent. 
 

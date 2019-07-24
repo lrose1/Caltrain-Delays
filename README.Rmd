@@ -19,6 +19,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo=F)
 library(tidyverse)
 library(lubridate)
 library(gridExtra)
+library(stringr)
 tweets <- read_csv("Data/caltrain_tweets.csv") 
 
 working <- tweets %>% 
@@ -30,7 +31,29 @@ working <- tweets %>%
   filter(weekday != "Sun") %>% 
   mutate(month = month(date)) %>% 
   mutate(delay = ifelse(grepl("delay", text) | grepl("-[0-9]" , text),1,0)) %>%   # to account for the -XX" thing they do
-  mutate(major_delay = ifelse(delay == 1 & grepl("-[([2-9]|[0-9])]", text),1,0))  # >20 minutes
+  mutate(major_delay = ifelse(delay == 1 & grepl("-[([2-9]|[0-9])]", text),1,0)) %>%  # >20 minutes
+  mutate(train1 = (str_extract_all(text,"[0-9]{3}", simplify = TRUE)[,1])) %>% 
+  mutate(train2 = (str_extract_all(text,"[0-9]{3}", simplify = TRUE)[,2])) %>% 
+  mutate(train3 = (str_extract_all(text,"[0-9]{3}", simplify = TRUE)[,3])) %>% 
+  mutate(train4 = (str_extract_all(text,"[0-9]{3}", simplify = TRUE)[,4])) %>% 
+  mutate(train5 = (str_extract_all(text,"[0-9]{3}", simplify = TRUE)[,5])) %>% 
+  mutate(train6 = (str_extract_all(text,"[0-9]{3}", simplify = TRUE)[,6])) %>% 
+  mutate(train7 = (str_extract_all(text,"[0-9]{3}", simplify = TRUE)[,7])) %>% 
+  mutate(train8 = (str_extract_all(text,"[0-9]{3}", simplify = TRUE)[,8])) %>% 
+  mutate(train9 = (str_extract_all(text,"[0-9]{3}", simplify = TRUE)[,9])) %>% 
+  mutate(train10 = (str_extract_all(text,"[0-9]{3}", simplify = TRUE)[,10])) %>% 
+  mutate(train11 = (str_extract_all(text,"[0-9]{3}", simplify = TRUE)[,11])) %>% 
+  mutate(train12 = (str_extract_all(text,"[0-9]{3}", simplify = TRUE)[,12])) %>% 
+  group_by(date, commute) %>% 
+  mutate(direction = ifelse(any(grepl("NB", text))))
+  
+%>% 
+  mutate(direction = ifelse(grepl("NB", text) | train %% 2 == 0, 1,
+                            ifelse(grepl("SB", text) | train %% 2 == 1, 2, 
+                                   ifelse(grepl("SB", text) & grepl("NB", text), 3, NA))))
+  mutate(NB = ifelse(grepl("NB", text) | train %% 2 == 0, "NB", NA)) %>% 
+  mutate(SB = ifelse(grepl("SB", text) | train %% 2 == 1, "SB", NA)) %>% 
+                            
 
 aggdata <- working %>% 
   group_by(date, commute) %>% 

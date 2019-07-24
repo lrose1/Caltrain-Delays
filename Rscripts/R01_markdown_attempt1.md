@@ -4,7 +4,14 @@ Caltrain Delays
 Overview
 --------
 
-[Caltrain](http://caltrain.com) is a commuter rail line that serves the San Francisco Peninsula. It serves about 65,000 riders per week day over it's 77-mile route, and has an operating budget just shy of $150 million.
+The goal of this project was to determine how often Caltrain is delayed for commuters.
+
+**Short answer: Caltrain has significant delays on 1-2 commutes per week.**
+
+Background
+----------
+
+[Caltrain](http://caltrain.com) is a commuter rail line that serves the San Francisco Peninsula. It serves about 65,000 riders per week day over it's 77-mile route, and has an operating budget of about $150 million.
 
 Caltrain [defines on-time arrivals](http://www.caltrain.com/Assets/__Agendas+and+Minutes/JPB/2018/2018-12-06+Rail+Safety+Presentation.pdf) by comparing scheduled arrival times to actual arrival times at end-line locations (San Francisco 4th and King, San Jose Diridon, Tamien, or Gilroy stations). It has a stated goal of 95 percent on-time at end-line locations, defined at reaching the final destination no more than 6 minutes from the scheduled arrival time. By this metric, Caltrain's on-time performance (OTP) is about 93 percent.
 
